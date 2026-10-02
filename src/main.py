@@ -9,7 +9,7 @@
 
 # Library imports
 from vex import(Brain, wait, MSEC, Competition, Controller, PRIMARY, Inertial, Motor, Ports, FORWARD, REVERSE, PERCENT)
-
+__name__
 brain = Brain()
 controller1 = Controller(PRIMARY)
 inertial = Inertial(Ports.PORT5)
@@ -76,8 +76,8 @@ def user_control():
         motorgroupright.spin(FORWARD)
         driveSpeed = controller1.axis3.position()
         turn = controller1.axis1.position()
-        motorgroupleft.set_velocity(0.2*driveSpeed + 0.2*turn, PERCENT)
-        motorgroupright.set_velocity(0.2*driveSpeed - 0.2*turn, PERCENT)
+        motorgroupleft.set_velocity(driveSpeed + turn, PERCENT)
+        motorgroupright.set_velocity(driveSpeed - turn, PERCENT)
  
 # create competition instance
 comp = Competition(user_control, autonomous)
