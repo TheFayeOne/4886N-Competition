@@ -22,10 +22,15 @@ motorgroupright = MotorGroup(motorrearright, motorfrontright)
 drivetrain = SmartDrive(motorgroupleft, motorgroupright, inertial, 320, 350, 350)
 auton = 0
 
+def pass_function():
+    pass
+    print("pass")
+
 def autonomous_switcher():
     global auton
     auton = auton + 1
-    if auton > 3:
+    print("auton switched")
+    if auton > 1:
         auton = 0
     if auton == 0:
         controller1.screen.clear_screen()
@@ -33,13 +38,23 @@ def autonomous_switcher():
         controller1.screen.print("Short Auton")
         wait(50, MSEC)
         controller1.screen.set_cursor(3, 1)
-        controller1.rumble(".")
+    if auton == 1:
+        controller1.screen.clear_screen()
+        wait(50, MSEC)
+        controller1.screen.print("Empty Auton")
+        wait(50, MSEC)
+        controller1.screen.set_cursor(3, 1)
+    controller1.rumble(".")
+
 
 def pre_auton():
     global auton
     brain.screen.clear_screen()
     brain.screen.print("Pre-Autonomous")
     inertial.calibrate()
+    controller1.buttonY.pressed(autonomous_switcher)
+    while inertial.is_calibrating():
+        wait(25, MSEC)
 
 def autonomous():
     global auton
@@ -48,6 +63,9 @@ def autonomous():
     # place automonous code here
     if auton == 0:
         drivetrain.drive_for(FORWARD, 100, MM)
+    if auton == 1:
+        pass
+
 def user_control():
     brain.screen.clear_screen()
     brain.screen.print("driver control")
@@ -68,3 +86,4 @@ comp = Competition(user_control, autonomous)
 brain.screen.clear_screen()
 pre_auton()
 controller1.rumble(".")
+print("Auton " + str(auton) + " has loaded")
