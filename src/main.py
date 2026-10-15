@@ -9,14 +9,14 @@
 
 # Library imports
 from vex import(Brain, wait, MSEC, Competition, Controller, PRIMARY, Inertial, Motor, Ports, FORWARD, REVERSE, PERCENT)
-__name__
+
 brain = Brain()
 controller1 = Controller(PRIMARY)
 inertial = Inertial(Ports.PORT5)
 motorrearleft = Motor(Ports.PORT12, GearSetting.RATIO_18_1, True)
-motorrearright = Motor(Ports.PORT9, GearSetting.RATIO_18_1, False)
+motorrearright = Motor(Ports.PORT6, GearSetting.RATIO_18_1, False)
 motorfrontleft = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
-motorfrontright = Motor(Ports.PORT4, GearSetting.RATIO_18_1, False)
+motorfrontright = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
 motorgroupleft = MotorGroup(motorrearleft, motorfrontleft)
 motorgroupright = MotorGroup(motorrearright, motorfrontright)
 drivetrain = SmartDrive(motorgroupleft, motorgroupright, inertial, 320, 350, 350)
@@ -28,10 +28,11 @@ def pass_function():
 
 def autonomous_switcher():
     global auton
+    global matchStart
     auton = auton + 1
-    print("auton switched")
     if auton > 1:
         auton = 0
+    print("auton switched")
     if auton == 0:
         controller1.screen.clear_screen()
         wait(50, MSEC)
@@ -43,9 +44,8 @@ def autonomous_switcher():
         wait(50, MSEC)
         controller1.screen.print("Empty Auton")
         wait(50, MSEC)
-        controller1.screen.set_cursor(3, 1)
+    controller1.screen.set_cursor(3, 1)
     controller1.rumble(".")
-
 
 def pre_auton():
     global auton
@@ -64,7 +64,9 @@ def autonomous():
     if auton == 0:
         drivetrain.drive_for(FORWARD, 100, MM)
     if auton == 1:
-        pass
+        pass_function()
+
+
 
 def user_control():
     brain.screen.clear_screen()
@@ -85,5 +87,5 @@ comp = Competition(user_control, autonomous)
 # actions to do when the program starts
 brain.screen.clear_screen()
 pre_auton()
-controller1.rumble(".")
+controller1.rumble("-")
 print("Auton " + str(auton) + " has loaded")
