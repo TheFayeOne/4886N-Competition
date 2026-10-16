@@ -12,7 +12,7 @@ from vex import(Brain, wait, MSEC, Competition, Controller, PRIMARY, Inertial, M
 
 brain = Brain()
 controller1 = Controller(PRIMARY)
-inertial = Inertial(Ports.PORT5)
+inertial = Inertial(Ports.PORT13)
 motorrearleft = Motor(Ports.PORT12, GearSetting.RATIO_18_1, True)
 motorrearright = Motor(Ports.PORT6, GearSetting.RATIO_18_1, False)
 motorfrontleft = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
