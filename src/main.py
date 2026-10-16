@@ -28,7 +28,6 @@ def pass_function():
 
 def autonomous_switcher():
     global auton
-    global matchStart
     auton = auton + 1
     if auton > 1:
         auton = 0
