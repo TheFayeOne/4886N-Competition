@@ -13,7 +13,7 @@ from vex import(Brain, wait, MSEC, Competition, Controller, PRIMARY, Inertial, M
 brain = Brain()
 controller1 = Controller(PRIMARY)
 inertial = Inertial(Ports.PORT12)
-motorrearleft = Motor(Ports.PORT12, GearSetting.RATIO_18_1, True)
+motorrearleft = Motor(Ports.PORT13, GearSetting.RATIO_18_1, True)
 motorrearright = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
 motorfrontleft = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
 motorfrontright = Motor(Ports.PORT6, GearSetting.RATIO_18_1, False)
@@ -21,6 +21,7 @@ motorgroupleft = MotorGroup(motorrearleft, motorfrontleft)
 motorgroupright = MotorGroup(motorrearright, motorfrontright)
 drivetrain = SmartDrive(motorgroupleft, motorgroupright, inertial, 320, 350, 350)
 auton = 0
+slowMode = 0
 
 def pass_function():
     pass
@@ -46,12 +47,19 @@ def autonomous_switcher():
     controller1.screen.set_cursor(3, 1)
     controller1.rumble(".")
 
+def slow_mode_toggle():
+    if slowMode == 0:
+        slowMode == 1
+    else:
+        slowMode == 0
+
+
 def pre_auton():
     global auton
     brain.screen.clear_screen()
     brain.screen.print("Pre-Autonomous")
     inertial.calibrate()
-    controller1.buttonY.pressed(autonomous_switcher)
+    controller1.buttonA.pressed(autonomous_switcher)
     while inertial.is_calibrating():
         wait(25, MSEC)
 
@@ -65,8 +73,6 @@ def autonomous():
     if auton == 1:
         pass_function()
 
-
-
 def user_control():
     brain.screen.clear_screen()
     brain.screen.print("driver control")
@@ -77,9 +83,14 @@ def user_control():
         motorgroupright.spin(FORWARD)
         driveSpeed = controller1.axis3.position()
         turn = controller1.axis1.position()
-        motorgroupleft.set_velocity(driveSpeed + turn, PERCENT)
-        motorgroupright.set_velocity(driveSpeed - turn, PERCENT)
- 
+        controller1.buttonY.pressed()
+        if slowMode == 0:
+            motorgroupleft.set_velocity(driveSpeed + turn, PERCENT)
+            motorgroupright.set_velocity(driveSpeed - turn, PERCENT)
+        if slowMode == 1:
+            motorgroupleft.set_velocity(0.5 * driveSpeed + 0.5 * turn, PERCENT)
+            motorgroupleft.set_velocity(0.5 * driveSpeed - 0.5 * turn, PERCENT)
+
 # create competition instance
 comp = Competition(user_control, autonomous)
 
